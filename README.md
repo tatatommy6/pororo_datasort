@@ -1,5 +1,4 @@
 사용한 라이브러리: pyannote, torch, json
-<<<<<<< HEAD
 <!--
 <img src="https://img.shields.io/badge/pyannote-3776AB?style=flat&logo=&logoColor=white"/>
 
