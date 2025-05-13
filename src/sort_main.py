@@ -2,29 +2,45 @@ import torch
 import json
 import os
 from pyannote.audio import Pipeline
-from pyannote.core import Segment
+from pyannote.core import Annotation
 from pyannote.audio import Audio
 
 # Hugging Face access token 직접 입력
 pipeline = Pipeline.from_pretrained(
     "pyannote/speaker-diarization-3.1",
-    use_auth_token="니꺼적어라"  # 여기에 실제 토큰 입력
+    use_auth_token=""  # 여기에 실제 토큰 입력
 )
 
-# os.listdir()로 디렉토리 내의 모든 파일 이름을 리스트로 반환
-for CurrentVoiceFile in os.listdir("VoiceWav"): 
-    if CurrentVoiceFile.endswith(".wav"):
-        print(f"Processing {CurrentVoiceFile}...")
+# CUDA GPU 사용
+device = torch.device("cuda")
+pipeline.to(device)
 
-        # 전체 파일에 대해 diarization 수행
-        diarization = pipeline(os.path.join("VoiceWav", CurrentVoiceFile)) 
-        print("전체 diarization 결과:")
-        print(diarization)
+def diar_to_json(anno:Annotation): #Annotation 객체를 json형식으로 바꿈
+    result = []
+    for segment, track, label in anno.itertracks(True):
+        result.append({
+            "start" :segment.start,
+            "end" : segment.end,
+            "track" : track,
+            "label" :label
+        })
+    
+    return result
 
+def wav_to_json(CurrentVoiceFile):
+    print(f"Processing {CurrentVoiceFile}...")
 
-# 일부 구간에 대해서도 수행
-excerpt = Segment(start=2.0, end=5.0)
-waveform, sample_rate = Audio().crop("2_output.wav", excerpt)
-excerpt_diarization = pipeline({"waveform": waveform, "sample_rate": sample_rate})
-print("일부 구간 diarization 결과:")
-print(excerpt_diarization)
+    # 전체 파일에 대해 diarization 수행
+    diarization = pipeline(os.path.join("data", CurrentVoiceFile)) 
+    print("전체 diarization 결과:")
+    print(diarization)
+
+    with open(f"DiarizationResultsJson/{CurrentVoiceFile[0:-4]}.json", "w") as f:
+        json.dump(diar_to_json(diarization), f) # Json 저장
+
+# # os.listdir()로 디렉토리 내의 모든 파일 이름을 리스트로 반환
+# for CurrentVoiceFile in os.listdir("data"): 
+#     if CurrentVoiceFile.endswith(".wav"):
+#         wav_to_json(CurrentVoiceFile)
+
+wav_to_json("3.wav")
