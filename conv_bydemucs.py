@@ -14,8 +14,8 @@ model = get_model(name="mdx_extra") # 다른 모델: 'htdemucs','demucs_quantize
 model.cpu()  #.mps()안됌
 
 # 반복 처리
-for i in range(5, 14): # 4.wav부터 13.wav까지 파일을
-    file_name = f"{i}.wav" #받아와서
+for i in range(5, 14): # 5.wav부터 13.wav까지 파일을
+    file_name = f"{i}.wav" #파일 이름 생성하고
     file_path = os.path.join(input_dir, file_name) 
 
     if not os.path.isfile(file_path):# 파일이 존재하지 않으면 경고 날리고
@@ -31,7 +31,6 @@ for i in range(5, 14): # 4.wav부터 13.wav까지 파일을
     if wav.shape[0] == 1:
         wav = wav.repeat(2, 1) #1체널을 2번 복제하여 2체널로 변환함
 
-    # 32비트 float로 변환
     wav = wav.unsqueeze(0)
     # demucs 모델은 [batch, channels, sales] 형태로 입력을 받음
     #unsqueeze(0) 을 하면 기존 (2, samples) 형태가 (1, 2, samples)로 변환됨
@@ -41,8 +40,8 @@ for i in range(5, 14): # 4.wav부터 13.wav까지 파일을
         sources = apply_model(model, wav, split=True, overlap=0.25, progress=True) #demucs 라이브러리의 apply_model 함수 사용
 
     # 분리된 소스 저장
-    sources_names = model.sources
-    for idx, name in enumerate(sources_names):
+    sources_names = model.sources #모델이 분리한 트랙 이름 리스트 가져옴
+    for idx, name in enumerate(sources_names): 
         output_path = os.path.join(output_dir, f"{i}_{name}.wav")
-        torchaudio.save(output_path, sources[0, idx], sample_rate=sr)
+        torchaudio.save(output_path, sources[0, idx], sample_rate=sr)  #sources[0, idx]는 분리된 특정 트랙 오디오 tensor..(?)
         print(f"  → 저장됨: {output_path}")
