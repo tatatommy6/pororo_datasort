@@ -31,7 +31,7 @@ def wav_to_json(CurrentVoiceFile):
     print(f"Processing {CurrentVoiceFile}...")
 
     # 전체 파일에 대해 diarization 수행
-    diarization = pipeline(os.path.join("data", CurrentVoiceFile)) 
+    diarization = pipeline(os.path.join("separated_outputs", CurrentVoiceFile)) 
     print("전체 diarization 결과:")
     print(diarization)
 
@@ -39,8 +39,10 @@ def wav_to_json(CurrentVoiceFile):
         json.dump(diar_to_json(diarization), f) # Json 저장
 
 # # os.listdir()로 디렉토리 내의 모든 파일 이름을 리스트로 반환
-# for CurrentVoiceFile in os.listdir("data"): 
-#     if CurrentVoiceFile.endswith(".wav"):
-#         wav_to_json(CurrentVoiceFile)
+for CurrentVoiceFile in os.listdir("separated_outputs"): 
+    if CurrentVoiceFile.endswith("vocals.wav"):
+        print(CurrentVoiceFile)
+        wav_to_json(CurrentVoiceFile)
+            
 
-wav_to_json("3.wav")
+#wav_to_json("VoiceWav/9.wav")
