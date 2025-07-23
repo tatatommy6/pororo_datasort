@@ -1,3 +1,4 @@
 .conda
 .env
 .data
+separated_outputs
