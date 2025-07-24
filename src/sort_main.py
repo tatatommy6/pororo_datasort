@@ -12,7 +12,7 @@ pipeline = Pipeline.from_pretrained(
 )
 
 # CUDA GPU 사용
-device = torch.device("cuda")
+device = torch.device("mps" if torch.cuda.is_available() else "cpu")
 pipeline.to(device)
 
 def diar_to_json(anno:Annotation): #Annotation 객체를 json형식으로 바꿈
@@ -42,6 +42,17 @@ def wav_to_json(CurrentVoiceFile):
 for CurrentVoiceFile in os.listdir("separated_outputs"): 
     if CurrentVoiceFile.endswith("vocals.wav"):
         print(CurrentVoiceFile)
+<<<<<<< HEAD
         wav_to_json(CurrentVoiceFile)    
  
 #wav_to_json("VoiceWav/9.wav")
+=======
+        wav_to_json(CurrentVoiceFile)
+            
+
+<<<<<<< Updated upstream
+#wav_to_json("VoiceWav/9.wav")
+=======
+wav_to_json("/Users/kimminkyeol/separated/mdx_extra_q/1/1vocals.wav")
+>>>>>>> Stashed changes
+>>>>>>> c06c839d6a9e0a3369bec439b44349c57c586f18
