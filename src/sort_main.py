@@ -42,7 +42,6 @@ def wav_to_json(CurrentVoiceFile):
 for CurrentVoiceFile in os.listdir("separated_outputs"): 
     if CurrentVoiceFile.endswith("vocals.wav"):
         print(CurrentVoiceFile)
-        wav_to_json(CurrentVoiceFile)
-            
-
+        wav_to_json(CurrentVoiceFile)    
+ 
 #wav_to_json("VoiceWav/9.wav")
